@@ -10,7 +10,6 @@ const prevBtn = document.getElementById("prev");
 const playBtn = document.getElementById("play");
 const nextBtn = document.getElementById("next");
 
-
 // Music
 const songs = [
   {
@@ -53,56 +52,77 @@ function pauseSong() {
 }
 
 // Update DOM
-function loadSong(song){
+function loadSong(song) {
   title.textContent = song.displayName;
   artist.textContent = song.artist;
-  music.src = `music/${song.name}.mp3`
-  image.src = `img/${song.name}.jpg`
+  music.src = `music/${song.name}.mp3`;
+  image.src = `img/${song.name}.jpg`;
 }
 
 // current song
-let songIndex = 0
+let songIndex = 0;
 
 // next song
-function nextSong(){
-  songIndex++
+function nextSong() {
+  songIndex++;
   if (songIndex > songs.length - 1) {
-    songIndex = 0
+    songIndex = 0;
   }
-  loadSong(songs[songIndex])
-  playSong()
-
+  loadSong(songs[songIndex]);
+  playSong();
 }
 // prev song
-function prevSong(){
-  songIndex--
+function prevSong() {
+  songIndex--;
   if (songIndex < 0) {
-    songIndex = songs.length - 1
+    songIndex = songs.length - 1;
   }
-  loadSong(songs[songIndex])
-  playSong()
-
-
+  loadSong(songs[songIndex]);
+  playSong();
 }
 
 // on load - select first song
-loadSong(songs[songIndex])
-
+loadSong(songs[songIndex]);
 
 // Update Progress Bar & Time
-function updateProgressBar(e){
+function updateProgressBar(e) {
   if (isPlaying) {
-    const {duration, currentTime} = e.srcElement
-    console.log(duration, currentTime);
-   
+    const { duration, currentTime } = e.srcElement;
+    // console.log(duration, currentTime);
     // update progress bar width
     const progressPercent = (currentTime / duration) * 100;
     progress.style.width = `${progressPercent}%`;
+
+    // Calculate display for duration
+    const durationMinutes = Math.floor(duration / 60);
+    // console.log("minutes", durationMinutes);
+    let durationSeconds = Math.floor(duration % 60);
+    if (durationSeconds < 10) {
+      durationSeconds = `0${durationSeconds}`;
+    }
+   
+    // console.log("seconds", durationSeconds);
+
+    // duration NaN
+    if (durationSeconds) {
+      durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+    }
+
+    // Current time
+    const currentMinutes = Math.floor(currentTime / 60);
+    // console.log("minutes", currentMinutes);
+    let currentSeconds = Math.floor(currentTime % 60);
+    if (currentSeconds < 10) {
+      currentSeconds = `0${currentSeconds}`;
+    }
+    console.log(currentMinutes, currentSeconds);
+    currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`
+   
   }
 }
 
 // play or pause event listener
 playBtn.addEventListener("click", () => (isPlaying ? pauseSong() : playSong()));
-prevBtn.addEventListener('click', prevSong);
-nextBtn.addEventListener('click', nextSong);
-music.addEventListener('timeupdate', updateProgressBar);
+prevBtn.addEventListener("click", prevSong);
+nextBtn.addEventListener("click", nextSong);
+music.addEventListener("timeupdate", updateProgressBar);
